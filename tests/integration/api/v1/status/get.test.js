@@ -6,7 +6,6 @@ describe("GET to /api/v1/status", () => {
   data = await fetch("http://localhost:3000/api/v1/status");
   response = data;
   responseBody = await data.json();
-  console.log(responseBody);
 });
 
   it("should return 200", () => {
@@ -20,15 +19,18 @@ describe("GET to /api/v1/status", () => {
   });
 
   it("should return a server version", () => {
-    expect(responseBody.server_version).toBeDefined();
+    expect(responseBody.dependencies.database.server_version).toBeDefined();
+    expect(responseBody.dependencies.database.server_version).toEqual("16.0");
   });
 
   it("should return a max connections", () => {
-    expect(responseBody.max_connections).toBeDefined();
+    expect(responseBody.dependencies.database.max_connections).toBeDefined();
+    expect(responseBody.dependencies.database.max_connections).toEqual(100);
   });
 
   it("should return a current connections", () => {
-    expect(responseBody.current_connections).toBeDefined();
+    expect(responseBody.dependencies.database.current_connections).toBeDefined();
+    expect(responseBody.dependencies.database.current_connections).toEqual(1);
   });
 
 });
