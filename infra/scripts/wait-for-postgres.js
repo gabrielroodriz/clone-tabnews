@@ -1,6 +1,4 @@
 const {exec} = require ("node:child_process")
-const { error } = require("node:console")
-
 
 function handleReturn(error, stdout) {
    if(stdout.search("accepting connections") === -1) {
@@ -13,6 +11,7 @@ function handleReturn(error, stdout) {
    console.log("\n\nPostgres ready ✅")
 }
 function checkPostgres() {
-    exec('docker exec postgres-dev clear}
+    exec('docker exec postgres-dev pg_isready --host localhost', handleReturn)
+}
 
 checkPostgres()
