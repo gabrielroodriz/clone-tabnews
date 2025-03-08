@@ -9,7 +9,7 @@ async function status(request, response) {
       text: "SELECT count(*)::int as current_connections FROM pg_stat_activity WHERE datname = $1;",
       values: [databaseName]
     });
-    const updatedAt = new Date().toISOString();
+    const updatedAt = new Date().toISOString();                
     const serverVersion = result.rows.find(
         (row) => row.name === "server_version"
     ).setting.toString();

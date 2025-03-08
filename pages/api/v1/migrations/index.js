@@ -6,7 +6,7 @@ export default async function migrations(request, response) {
     const dbClient = await database.getNewClient();
     const defaultMigrationsOptions = {
         dbClient,
-        dryRun: true,
+        dryRun: true,        
         dir: join("infra", "migrations"),
         direction: "up",
         verbose: true,
@@ -16,7 +16,7 @@ export default async function migrations(request, response) {
         const pendingMigrations = await migrationRunner({
             ...defaultMigrationsOptions,
         });
-        await dbClient.end();
+       
         response.status(200).json(pendingMigrations);
     }
 
@@ -26,7 +26,7 @@ export default async function migrations(request, response) {
             dryRun: false,
         });
 
-        await dbClient.end();
+    
         const hasMigrations = migrateMigrations.length > 1;
 
         if (hasMigrations) {
@@ -34,5 +34,6 @@ export default async function migrations(request, response) {
         } else response.status(200).json(migrateMigrations);
     }
 
+    await dbClient.end()
     return response.status(405).end();
 }
