@@ -12,7 +12,7 @@ async function waitForAllServices() {
         async function fetchStatusPage() {
             try {
                 const response = await fetch(
-                    "http://localhost:3000/api/v1/statusss"
+                    "http://localhost:3000/api/v1/status"
                 );
                 if (!response.ok) {
                     throw Error(`HTTP error ${response.status}`);
