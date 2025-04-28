@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Client } from "pg";
 
 const getSSL = () => process.env.NODE_ENV === "production";

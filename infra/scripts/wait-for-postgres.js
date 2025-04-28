@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { exec } = require("node:child_process");
 let count = 0;
 const spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
