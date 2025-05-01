@@ -5,31 +5,31 @@ import jest from "eslint-plugin-jest";
 import globals from "globals";
 
 export default [
-    {
-        files: ["**/*.js", "**/*.jsx"],
-        ignores: [".next", "node_modules", ".swc"],
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-            },
-        },
+  {
+    files: ["**/*.js", "**/*.jsx"],
+    ignores: [".next", "node_modules", ".swc"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
     },
-    {
-        files: ["**/*.test.js", "**/*.spec.js"],
-        plugins: {
-            jest,
-        },
-        languageOptions: {
-            globals: {
-                ...globals.jest,
-            },
-        },
-        rules: {
-            ...jest.configs.recommended.rules,
-        },
+  },
+  {
+    files: ["**/*.test.js", "**/*.spec.js"],
+    plugins: {
+      jest,
     },
-    pluginJs.configs.recommended,
-    next,
-    prettier,
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      ...jest.configs.recommended.rules,
+    },
+  },
+  pluginJs.configs.recommended,
+  next,
+  prettier,
 ];
