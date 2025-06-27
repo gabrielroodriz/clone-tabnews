@@ -34,9 +34,9 @@ async function status(request, response) {
     });
   } catch (error) {
     const fallbackError = new InternalServerError({
-      cause: error
+      cause: error,
     });
- 
+
     response.status(fallbackError.statusCode).json(fallbackError);
   }
 }
