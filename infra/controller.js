@@ -3,7 +3,7 @@ import { InternalServerError, MethodNotAllowedError } from "infra/errors";
 function onErroHandler(error, request, response) {
   const fallbackError = new InternalServerError({
     cause: error,
-    statusCode: error.statusCode
+    statusCode: error.statusCode,
   });
 
   response.status(fallbackError.statusCode).json(fallbackError);
@@ -18,6 +18,6 @@ const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErroHandler,
-  }
-}
+  },
+};
 export default controller;

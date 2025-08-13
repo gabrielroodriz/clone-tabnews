@@ -12,7 +12,7 @@ async function query(queryObject) {
   } catch (error) {
     throw new ServiceError({
       message: "Erro ao consultar o banco de dados",
-      cause: error
+      cause: error,
     });
   } finally {
     await client?.end();
