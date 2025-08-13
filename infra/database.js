@@ -1,4 +1,5 @@
 import { Client } from "pg";
+import { ServiceError } from "infra/errors";
 
 const getSSL = () => process.env.NODE_ENV === "production";
 
@@ -9,7 +10,10 @@ async function query(queryObject) {
     const result = await client.query(queryObject);
     return result;
   } catch (error) {
-    throw new Error("Error querying database", { cause: error });
+    throw new ServiceError({
+      message: "Erro ao consultar o banco de dados",
+      cause: error,
+    });
   } finally {
     await client?.end();
   }
