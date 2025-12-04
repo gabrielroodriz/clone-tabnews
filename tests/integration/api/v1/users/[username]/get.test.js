@@ -84,7 +84,6 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(secondyResponseBody.updated_at)).not.toBeNaN();
     });
     it("With nonexistent username", async () => {
-
       const response = await fetch(
         "http://localhost:3000/api/v1/users/undefinedUser",
       );
@@ -93,14 +92,13 @@ describe("GET /api/v1/users/[username]", () => {
 
       const responseBody = await response.json();
 
-      console.log(responseBody)
+      console.log(responseBody);
       expect(responseBody).toEqual({
-       name:"NotFoundError",
-       message:"The username you entered was not found in the system.",
-       action: "Please verify that the username has been entered correctly.",
-       status_code: 404
+        name: "NotFoundError",
+        message: "The username you entered was not found in the system.",
+        action: "Please verify that the username has been entered correctly.",
+        status_code: 404,
       });
-
     });
   });
 });
