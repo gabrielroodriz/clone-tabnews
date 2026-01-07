@@ -1,10 +1,12 @@
 import database from "infra/database";
-import users from "pages/api/v1/users";
+import password from "models/password";
 import { ValidationError, NotFoundError } from "infra/errors.js";
+
 
 async function create(input) {
   await validateUniqueEmail(input.email);
   await validateUniqueUsername(input.username);
+  await hashPasswordInObject(input);
 
   const newUser = await runInsertQuery(input);
   return newUser;
@@ -48,6 +50,11 @@ async function create(input) {
         action: "Please use another email address to register",
       });
     }
+  }
+
+  async function hashPasswordInObject(input) {
+    const hashedPassword = await password.hash(input.password);
+    input.password = hashedPassword
   }
 
   async function runInsertQuery(input) {
