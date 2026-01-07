@@ -1,3 +1,5 @@
+import password from "models/password";
+import user from "models/user";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
@@ -7,9 +9,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("POST /api/v1/migrations", () => {
+describe("POST /api/v1/users", () => {
   describe("Anonymous user", () => {
-    it("With unique and valide data", async () => {
+    it("With unique and validate data", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -33,7 +35,7 @@ describe("POST /api/v1/migrations", () => {
         id: responseBody.id,
         username: "gagosantos",
         email: "gago@teste.com",
-        password: "abs3213",
+        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -41,6 +43,21 @@ describe("POST /api/v1/migrations", () => {
       expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+
+      const userInDataBase = await user.findOneByUsername(
+        responseBody.username,
+      );
+      const correctPasswordMatch = await password.compare(
+        "abs3213",
+        userInDataBase.password,
+      );
+      expect(correctPasswordMatch).toBe(true);
+
+      const incorrectPasswordMatch = await password.compare(
+        "incorrectPassword",
+        userInDataBase.password,
+      );
+      expect(incorrectPasswordMatch).toBe(false);
     });
     it("With duplicate 'email'", async () => {
       const firstResponse = await fetch("http://localhost:3000/api/v1/users", {
@@ -126,7 +143,7 @@ describe("POST /api/v1/migrations", () => {
       expect(responseBody).toEqual({
         name: "ValidationError",
         message: "The username provided is already in use",
-        action: "Please use another username to register",
+        action: "Please use another username this operation",
         status_code: 400,
       });
     });
