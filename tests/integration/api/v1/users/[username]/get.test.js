@@ -10,21 +10,11 @@ beforeAll(async () => {
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
     it("With exact case match", async () => {
-      const firstResponse = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "mesmocase",
-          email: "mesmo.case@teste.com",
-          password: "abs3213",
-          created_at: "2025-09-17T17:25:53.159Z",
-          updated_at: "2025-09-17T17:25:53.159Z",
-        }),
+      await orchestrator.createUser({
+        username: "mesmocase",
+        email: "mesmo.case@teste.com",
+        password: "abs3213",
       });
-
-      expect(firstResponse.status).toBe(201);
 
       const secondyResponse = await fetch(
         "http://localhost:3000/api/v1/users/mesmocase",
@@ -47,21 +37,11 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(secondyResponseBody.updated_at)).not.toBeNaN();
     });
     it("With case mismatch", async () => {
-      const firstResponse = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "caseDiferente",
-          email: "diferent.case@teste.com",
-          password: "abs3213",
-          created_at: "2025-09-17T17:25:53.159Z",
-          updated_at: "2025-09-17T17:25:53.159Z",
-        }),
+      await orchestrator.createUser({
+        username: "caseDiferente",
+        email: "diferent.case@teste.com",
+        password: "abs3213",
       });
-
-      expect(firstResponse.status).toBe(201);
 
       const secondyResponse = await fetch(
         "http://localhost:3000/api/v1/users/caseDiferenTe",
@@ -92,7 +72,6 @@ describe("GET /api/v1/users/[username]", () => {
 
       const responseBody = await response.json();
 
-      console.log(responseBody);
       expect(responseBody).toEqual({
         name: "NotFoundError",
         message: "The username you entered was not found in the system.",
