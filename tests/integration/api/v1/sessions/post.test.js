@@ -1,27 +1,28 @@
-import session from 'models/session';
-import orchestrator from 'tests/orchestrator.js';
-import { version as uuidVersion } from 'uuid';
+import session from "models/session";
+import setCookieParser from "set-cookie-parser";
+import orchestrator from "tests/orchestrator.js";
+import { version as uuidVersion } from "uuid";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
 });
-describe('POST /api/v1/sessions', () => {
-  describe('Anonymous user', () => {
-    it('With incorrect `email` but correct `password`', async () => {
+describe("POST /api/v1/sessions", () => {
+  describe("Anonymous user", () => {
+    it("With incorrect `email` but correct `password`", async () => {
       await orchestrator.createUser({
-        password: 'correct-password',
+        password: "correct-password",
       });
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: 'incorrect-email@testing.com',
-          password: 'correct-password',
+          email: "incorrect-email@testing.com",
+          password: "correct-password",
         }),
       });
       expect(response.status).toBe(401);
@@ -29,24 +30,24 @@ describe('POST /api/v1/sessions', () => {
       const responseBody = await response.json();
       expect(responseBody).toEqual({
         status_code: 401,
-        name: 'UnauthorizedError',
-        message: 'Authentication data is incorrect',
-        action: 'Please verify that the submitted data is correct',
+        name: "UnauthorizedError",
+        message: "Authentication data is incorrect",
+        action: "Please verify that the submitted data is correct",
       });
     });
-    it('With incorrect `password` but correct `email`', async () => {
+    it("With incorrect `password` but correct `email`", async () => {
       await orchestrator.createUser({
-        email: 'correct-email@testing.com',
+        email: "correct-email@testing.com",
       });
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: 'correct-email@testing.com',
-          password: 'incorrect-password',
+          email: "correct-email@testing.com",
+          password: "incorrect-password",
         }),
       });
       expect(response.status).toBe(401);
@@ -54,22 +55,22 @@ describe('POST /api/v1/sessions', () => {
       const responseBody = await response.json();
       expect(responseBody).toEqual({
         status_code: 401,
-        name: 'UnauthorizedError',
-        message: 'Authentication data is incorrect',
-        action: 'Please verify that the submitted data is correct',
+        name: "UnauthorizedError",
+        message: "Authentication data is incorrect",
+        action: "Please verify that the submitted data is correct",
       });
     });
-    it('With incorrect `email` and `password`', async () => {
+    it("With incorrect `email` and `password`", async () => {
       await orchestrator.createUser({});
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: 'incorrect-email@testing.com',
-          password: 'incorrect-password',
+          email: "incorrect-email@testing.com",
+          password: "incorrect-password",
         }),
       });
       expect(response.status).toBe(401);
@@ -77,25 +78,25 @@ describe('POST /api/v1/sessions', () => {
       const responseBody = await response.json();
       expect(responseBody).toEqual({
         status_code: 401,
-        name: 'UnauthorizedError',
-        message: 'Authentication data is incorrect',
-        action: 'Please verify that the submitted data is correct',
+        name: "UnauthorizedError",
+        message: "Authentication data is incorrect",
+        action: "Please verify that the submitted data is correct",
       });
     });
-    it('With correct `email` and `password`', async () => {
+    it("With correct `email` and `password`", async () => {
       const { id } = await orchestrator.createUser({
-        email: 'allcorrect@testing.com',
-        password: 'allcorrect',
+        email: "allcorrect@testing.com",
+        password: "allcorrect",
       });
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: 'allcorrect@testing.com',
-          password: 'allcorrect',
+          email: "allcorrect@testing.com",
+          password: "allcorrect",
         }),
       });
       expect(response.status).toBe(201);
@@ -121,6 +122,18 @@ describe('POST /api/v1/sessions', () => {
       createdAt.setMilliseconds(0);
 
       expect(expiresAt - createdAt).toBe(session.EXPIRATION_IN_MILLISECONDS);
+
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: responseBody.token,
+        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+        expires: new Date(expiresAt),
+        httpOnly: true,
+        path: "/",
+      });
     });
   });
 });
