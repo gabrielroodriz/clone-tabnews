@@ -1,6 +1,6 @@
-import database from 'infra/database';
-import { NotFoundError, ValidationError } from 'infra/errors.js';
-import password from 'models/password';
+import database from "infra/database";
+import { NotFoundError, ValidationError } from "infra/errors.js";
+import password from "models/password";
 
 async function validateUniqueUsername(username) {
   const results = await database.query({
@@ -16,8 +16,8 @@ async function validateUniqueUsername(username) {
   });
   if (results.rowCount > 0) {
     throw new ValidationError({
-      message: 'The username provided is already in use',
-      action: 'Please use another username this operation',
+      message: "The username provided is already in use",
+      action: "Please use another username this operation",
     });
   }
 }
@@ -36,8 +36,8 @@ async function validateUniqueEmail(email) {
 
   if (results.rowCount > 0) {
     throw new ValidationError({
-      message: 'The email address provided is already in use',
-      action: 'Please use another email address to register',
+      message: "The email address provided is already in use",
+      action: "Please use another email address to register",
     });
   }
 }
@@ -62,8 +62,8 @@ async function findOneByUsername(username) {
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
-        message: 'The username you entered was not found in the system.',
-        action: 'Please verify that the username has been entered correctly.',
+        message: "The username you entered was not found in the system.",
+        action: "Please verify that the username has been entered correctly.",
       });
     }
     return results.rows[0];
@@ -89,8 +89,8 @@ async function findOneByEmail(email) {
     });
     if (results.rowCount === 0) {
       throw new NotFoundError({
-        message: 'The username you entered was not found in the system.',
-        action: 'Please verify that the username has been entered correctly.',
+        message: "The username you entered was not found in the system.",
+        action: "Please verify that the username has been entered correctly.",
       });
     }
     return results.rows[0];
@@ -128,13 +128,13 @@ async function create(input) {
 
 async function update(username, userInputValues) {
   const currentUser = await findOneByUsername(username);
-  if ('username' in userInputValues) {
+  if ("username" in userInputValues) {
     await validateUniqueUsername(userInputValues.username);
   }
-  if ('email' in userInputValues) {
+  if ("email" in userInputValues) {
     await validateUniqueEmail(userInputValues.email);
   }
-  if ('password' in userInputValues) {
+  if ("password" in userInputValues) {
     await hashPasswordInObject(userInputValues);
   }
   const userWithNewValues = { ...currentUser, ...userInputValues };
