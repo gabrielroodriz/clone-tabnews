@@ -5,6 +5,9 @@ async function hash(password) {
   return await bcryptjs.hash(password, rounds);
 }
 async function compare(providedPassword, storedPassword) {
+  if (!providedPassword || !storedPassword) {
+    return false;
+  }
   return bcryptjs.compare(providedPassword, storedPassword);
 }
 
