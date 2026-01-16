@@ -1,3 +1,4 @@
+import { serialize } from "cookie";
 import {
   InternalServerError,
   MethodNotAllowedError,
@@ -5,6 +6,7 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "infra/errors";
+import session from "models/session";
 
 function onErroHandler(error, request, response) {
   if (
@@ -18,7 +20,7 @@ function onErroHandler(error, request, response) {
   const fallbackError = new InternalServerError({
     cause: error,
   });
-
+  console.log({ fallbackError });
   response.status(fallbackError.statusCode).json(fallbackError);
 }
 
@@ -27,10 +29,21 @@ function onNoMatchHandler(request, response) {
   response.status(publicErroObjet.statusCode).json(publicErroObjet);
 }
 
+async function setSessionCookie(sessionToken, response) {
+  const cookie = serialize("session_id", sessionToken, {
+    path: "/",
+    maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  });
+
+  response.setHeader("Set-Cookie", cookie);
+}
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErroHandler,
   },
+  setSessionCookie,
 };
 export default controller;

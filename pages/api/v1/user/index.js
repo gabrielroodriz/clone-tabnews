@@ -10,7 +10,11 @@ export default router.handler(controller.errorHandlers);
 async function getHandler(request, response) {
   const sessionToken = request.cookies.session_id;
   const sessionObject = await session.findOneValidByToken(sessionToken);
-  console.log(sessionObject.user_id);
+
+  const renewSessionObject = await session.renew(sessionObject.id);
+  controller.setSessionCookie(renewSessionObject.token, response);
+
   const userFound = await user.findOneById(sessionObject.user_id);
+
   return response.status(200).json(userFound);
 }
