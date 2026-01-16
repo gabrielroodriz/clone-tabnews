@@ -1,5 +1,5 @@
-import { Client } from "pg";
 import { ServiceError } from "infra/errors";
+import { Client } from "pg";
 
 const getSSL = () => process.env.NODE_ENV === "production";
 

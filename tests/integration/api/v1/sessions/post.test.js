@@ -130,7 +130,6 @@ describe("POST /api/v1/sessions", () => {
         name: "session_id",
         value: responseBody.token,
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-        expires: new Date(expiresAt),
         httpOnly: true,
         path: "/",
       });
