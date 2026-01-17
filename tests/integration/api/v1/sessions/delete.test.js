@@ -8,13 +8,13 @@ beforeAll(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
 });
-describe("GET /api/v1/user", () => {
+describe("DELETE /api/v1/sessions", () => {
   describe("Default user", () => {
     it("With nonexistent session", async () => {
       const nonexistentToken =
         "f9813f5cfcbc5423b19aeb7dcf8fecfb39bf4ddde6032a0415defe06e8601efc2a6ac07ef46c16473c99a211aa338131";
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "DELETE",
         headers: {
           cookie: `session_id=${nonexistentToken}`,
@@ -44,7 +44,7 @@ describe("GET /api/v1/user", () => {
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${token}`,
@@ -73,7 +73,7 @@ describe("GET /api/v1/user", () => {
         id: session_id,
       } = await orchestrator.createSession(createdUser.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${token}`,
