@@ -39,11 +39,22 @@ async function setSessionCookie(sessionToken, response) {
 
   response.setHeader("Set-Cookie", cookie);
 }
+async function clearSessionCookie(response) {
+  const cookie = serialize("session_id", "invalid", {
+    path: "/",
+    maxAge: -1,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  });
+
+  response.setHeader("Set-Cookie", cookie);
+}
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErroHandler,
   },
   setSessionCookie,
+  clearSessionCookie,
 };
 export default controller;
